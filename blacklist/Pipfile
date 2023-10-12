@@ -4,8 +4,17 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+flask = "*"
+psycopg2-binary = "*"
+marshmallow = "*"
+flask-marshmallow = "*"
+sqlalchemy = "*"
+flask-sqlalchemy = "*"
+marshmallow-sqlalchemy = "*"
+python-dotenv = "*"
 
 [dev-packages]
+python-dotenv = "*"
 
 [requires]
 python_version = "3.10"
