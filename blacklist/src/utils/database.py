@@ -1,7 +1,8 @@
 import os
 
 
-class DatabaseUtil():
+class DatabaseUtil:
+    @staticmethod
     def generate_database_uri():
         DB_USER = os.environ["DB_USER"]
         DB_PASSWORD = os.environ["DB_PASSWORD"]
