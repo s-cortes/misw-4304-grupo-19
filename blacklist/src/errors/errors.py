@@ -8,4 +8,4 @@ class BaseAPIError(Exception):
 
 class DuplicatedError(BaseAPIError):
     code = HTTPStatus.PRECONDITION_FAILED.value
-    description = None
+    description = "El email ya se encuentra en la lista negra"
