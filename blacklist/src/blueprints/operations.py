@@ -13,7 +13,7 @@ from schemas.serializer import GetEmailResponseSchema
 black_list_bp = Blueprint('blacklist', __name__)
 
 
-@black_list_bp.route('/blacklists', methods=['POST, DELETE'])
+@black_list_bp.route('/blacklists', methods=['POST', 'DELETE'])
 def create() -> tuple[any, int]:
     if request.method == 'POST':
         payload = request.get_json()
@@ -53,5 +53,5 @@ def consult(email: str) -> tuple[any, int]:
 
     return response_schema.dump({
         "exists": True,
-        "reason": email.reason
+        "reason": email.blocked_reason
     }), HTTPStatus.OK.value
