@@ -5,7 +5,8 @@ from flask_marshmallow import Marshmallow
 from marshmallow import fields
 from sqlalchemy.dialects.postgresql import UUID
 
-db: SQLAlchemy = SQLAlchemy()
+from utils.database import db
+
 ma: Marshmallow = Marshmallow()
 
 
