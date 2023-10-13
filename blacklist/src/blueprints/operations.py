@@ -2,7 +2,7 @@ from flask import Blueprint, request, Response
 from http import HTTPStatus
 from marshmallow import ValidationError
 from psycopg2.errors import UniqueViolation
-from sqlalchemy import select
+from sqlalchemy import select, delete
 from sqlalchemy.exc import IntegrityError
 from errors import DuplicatedError
 
@@ -13,18 +13,25 @@ from schemas.serializer import GetEmailResponseSchema
 black_list_bp = Blueprint('blacklist', __name__)
 
 
-@black_list_bp.route('/blacklists', methods=['POST'])
+@black_list_bp.route('/blacklists', methods=['POST, DELETE'])
 def create() -> tuple[any, int]:
-    payload = request.get_json()
-    validated_data = create_schema.load(payload)
-    try:
-        new_email = Email(**validated_data)
-        db.session.add(new_email)
+    if request.method == 'POST':
+        payload = request.get_json()
+        validated_data = create_schema.load(payload)
+        try:
+            new_email = Email(**validated_data)
+            db.session.add(new_email)
+            db.session.commit()
+        except(IntegrityError, UniqueViolation):
+            db.session.rollback()
+            raise DuplicatedError()
+        return "Email insertado", HTTPStatus.OK.value
+    elif request.method == 'DELETE':
+        db.session.execute(
+            delete(Email)
+        )
         db.session.commit()
-    except(IntegrityError, UniqueViolation):
-        db.session.rollback()
-        raise DuplicatedError()
-    return "Email insertado", HTTPStatus.OK.value
+        return "Lista de emails vaciada", HTTPStatus.OK.value
 
 
 @black_list_bp.route('/blacklists/<string:email>', methods=['GET'])
