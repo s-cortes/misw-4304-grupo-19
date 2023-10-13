@@ -1,6 +1,3 @@
-import uuid
-
-from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from marshmallow import fields
 from sqlalchemy.dialects.postgresql import UUID

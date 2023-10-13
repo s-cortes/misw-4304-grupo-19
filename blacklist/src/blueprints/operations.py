@@ -1,12 +1,12 @@
-from flask import Blueprint, request, Response
 from http import HTTPStatus
-from marshmallow import ValidationError
+
+from flask import Blueprint, request
 from psycopg2.errors import UniqueViolation
 from sqlalchemy import select, delete
 from sqlalchemy.exc import IntegrityError
-from errors import DuplicatedError
 
-from models import db, Email, email_schema
+from errors import DuplicatedError
+from models import db, Email
 from schemas import create_schema
 from schemas.serializer import GetEmailResponseSchema
 
