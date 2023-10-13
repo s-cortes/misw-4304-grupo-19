@@ -9,6 +9,8 @@ from models import db, Email, email_schema
 from schemas import create_schema
 
 black_list_bp = Blueprint('blacklist', __name__)
+
+
 @black_list_bp.route('/blacklists', methods=['POST'])
 def create() -> Response:
     payload = request.get_json()
@@ -21,6 +23,7 @@ def create() -> Response:
         db.session.rollback()
         raise DuplicatedError()
     return "Email insertado", HTTPStatus.OK.value
+
 
 @black_list_bp.route('/blacklists/<string:email>', methods=['GET'])
 def consult() -> Response:

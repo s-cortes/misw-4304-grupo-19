@@ -1,4 +1,6 @@
 from marshmallow import Schema, fields, validate
+
+
 class CreateEmailSchema(Schema):
     email = fields.Email(
         required=True,
@@ -14,5 +16,6 @@ class CreateEmailSchema(Schema):
         validate=validate.Length(min=5),
         error_messages={"invalid": "invalid blocked_reason"}
     )
+
 
 create_schema = CreateEmailSchema()

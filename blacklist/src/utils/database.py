@@ -1,5 +1,6 @@
 import os
 
+
 class DatabaseUtil():
     def generate_database_uri():
         DB_USER = os.environ["DB_USER"]
