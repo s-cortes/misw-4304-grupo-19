@@ -1,0 +1,472 @@
+{
+	"info": {
+		"_postman_id": "500e7f4d-5a75-41fc-abff-7eb772c282eb",
+		"name": "DevOps",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "11797451"
+	},
+	"item": [
+		{
+			"name": "Blacklist",
+			"item": [
+				{
+					"name": "Reset emails",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Response status code is 200\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response body contains 'Lista de emails vaciada'\", function () {",
+									"  pm.expect(pm.response.text()).to.include(\"Lista de emails vaciada\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://{{BACKEND_HOST}}/blacklists",
+							"protocol": "http",
+							"host": [
+								"{{BACKEND_HOST}}"
+							],
+							"path": [
+								"blacklists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add to blacklist 1",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const email = pm.variables.replaceIn(\"{{$randomEmail}}\").toLowerCase();",
+									"const reason = pm.variables.replaceIn(\"{{$randomLoremSentence}}\").toLowerCase();",
+									"const guid = pm.variables.replaceIn(\"{{$guid}}\").toLowerCase();",
+									"pm.collectionVariables.set('BL_EMAIL_1', email);",
+									"pm.collectionVariables.set('BL_REASON_1', reason);",
+									"pm.collectionVariables.set('BL_UUID_1', guid);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Response status code is 200\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response body contains the message 'Email insertado'\", function () {",
+									"  pm.expect(pm.response.text()).to.include(\"Email insertado\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"{{BL_EMAIL_1}}\",\n    \"app_uuid\": \"{{BL_UUID_1}}\",\n    \"blocked_reason\": \"{{BL_REASON_1}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{BACKEND_HOST}}/blacklists",
+							"protocol": "http",
+							"host": [
+								"{{BACKEND_HOST}}"
+							],
+							"path": [
+								"blacklists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check from blacklist 1",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Response status code is 200\", function () {",
+									"  pm.expect(pm.response.code).to.equal(200);",
+									"});",
+									"",
+									"",
+									"  pm.test(\"Verify that the 'exists' field is present in the response\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData.exists).to.exist;",
+									"  });",
+									"",
+									"",
+									"pm.test(\"The 'exists' field should be a boolean value\", function () {",
+									"  const responseData = pm.response.json();",
+									"  ",
+									"  pm.expect(responseData.exists).to.be.a('boolean');",
+									"});",
+									"",
+									"",
+									"  pm.test(\"Verify that the 'reason' field is present in the response\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.reason).to.exist;",
+									"  });",
+									"",
+									"",
+									"pm.test(\"Verify that the 'reason' field is a non-empty string\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.reason).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");",
+									"});",
+									"",
+									"",
+									"",
+									"pm.test(\"The value of 'exists' should be true\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData.exists).to.be.true;",
+									"});",
+									"pm.test(\"The 'reason' field should be equal to BL_REASON_1\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData.reason).to.equal(pm.variables.get(\"BL_REASON_1\"));",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{BACKEND_HOST}}/blacklists/{{BL_EMAIL_1}}",
+							"protocol": "http",
+							"host": [
+								"{{BACKEND_HOST}}"
+							],
+							"path": [
+								"blacklists",
+								"{{BL_EMAIL_1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add to blacklist 2",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const email = pm.variables.replaceIn(\"{{$randomEmail}}\").toLowerCase();",
+									"const reason = pm.variables.replaceIn(\"{{$randomLoremSentence}}\").toLowerCase();",
+									"const guid = pm.variables.replaceIn(\"{{$guid}}\").toLowerCase();",
+									"pm.collectionVariables.set('BL_EMAIL_2', email);",
+									"pm.collectionVariables.set('BL_REASON_2', reason);",
+									"pm.collectionVariables.set('BL_UUID_2', guid);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Response status code is 200\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response body contains the message 'Email insertado'\", function () {",
+									"  pm.expect(pm.response.text()).to.include(\"Email insertado\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"{{BL_EMAIL_2}}\",\n    \"app_uuid\": \"{{BL_UUID_2}}\",\n    \"blocked_reason\": \"{{BL_REASON_2}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{BACKEND_HOST}}/blacklists",
+							"protocol": "http",
+							"host": [
+								"{{BACKEND_HOST}}"
+							],
+							"path": [
+								"blacklists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check from blacklist 2",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Response status code is 200\", function () {",
+									"  pm.expect(pm.response.code).to.equal(200);",
+									"});",
+									"",
+									"",
+									"  pm.test(\"Verify that the 'exists' field is present in the response\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData.exists).to.exist;",
+									"  });",
+									"",
+									"",
+									"pm.test(\"The 'exists' field should be a boolean value\", function () {",
+									"  const responseData = pm.response.json();",
+									"  ",
+									"  pm.expect(responseData.exists).to.be.a('boolean');",
+									"});",
+									"",
+									"",
+									"  pm.test(\"Verify that the 'reason' field is present in the response\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.reason).to.exist;",
+									"  });",
+									"",
+									"",
+									"pm.test(\"Verify that the 'reason' field is a non-empty string\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.reason).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");",
+									"});",
+									"",
+									"",
+									"",
+									"pm.test(\"The value of 'exists' should be true\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData.exists).to.be.true;",
+									"});",
+									"pm.test(\"The 'reason' field should be equal to BL_REASON_1\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData.reason).to.equal(pm.variables.get(\"BL_REASON_2\"));",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{BACKEND_HOST}}/blacklists/{{BL_EMAIL_2}}",
+							"protocol": "http",
+							"host": [
+								"{{BACKEND_HOST}}"
+							],
+							"path": [
+								"blacklists",
+								"{{BL_EMAIL_2}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check from blacklist non-existent email",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Response status code is 200\", function () {",
+									"  pm.expect(pm.response.code).to.equal(200);",
+									"});",
+									"",
+									"",
+									"pm.test(\"The 'exists' field should be a boolean\", function () {",
+									"  const responseData = pm.response.json();",
+									"  ",
+									"  pm.expect(responseData.exists).to.be.a('boolean');",
+									"});",
+									"",
+									"",
+									"pm.test(\"Validate the 'reason' field in the response\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData.reason).to.exist.and.to.be.a('string');",
+									"});",
+									"",
+									"",
+									"pm.test(\"The exists field should be false\", function () {",
+									"  const responseData = pm.response.json();",
+									"",
+									"  pm.expect(responseData.exists).to.be.false;",
+									"});",
+									"",
+									"",
+									"",
+									"pm.test(\"The 'reason' field should be equal to 'No se encuentra en la lista negra'\", function () {",
+									"  const responseData = pm.response.json();",
+									"  ",
+									"  pm.expect(responseData.reason).to.equal('No se encuentra en la lista negra');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{BACKEND_HOST}}/blacklists/example@example.com",
+							"protocol": "http",
+							"host": [
+								"{{BACKEND_HOST}}"
+							],
+							"path": [
+								"blacklists",
+								"example@example.com"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "BACKEND_HOST",
+			"value": "localhost:5000",
+			"type": "string"
+		},
+		{
+			"key": "BL_EMAIL_1",
+			"value": ""
+		},
+		{
+			"key": "BL_REASON_1",
+			"value": ""
+		},
+		{
+			"key": "BL_UUID_1",
+			"value": ""
+		},
+		{
+			"key": "BL_EMAIL_2",
+			"value": ""
+		},
+		{
+			"key": "BL_REASON_2",
+			"value": ""
+		},
+		{
+			"key": "BL_UUID_2",
+			"value": ""
+		}
+	]
+}

@@ -1,15 +1,14 @@
-from dotenv import load_dotenv
 from flask import Flask
 from marshmallow import ValidationError
 
 from blueprints import black_list_bp
 from errors import BaseAPIError, handle_api_custom_exception, handle_validation_error
-from models import db, ma
+from models import ma
 from utils import DatabaseUtil
+from utils.database import db
 
 
 def create_app():
-    load_dotenv()
     app = Flask(__name__)
     app.config["SQLALCHEMY_DATABASE_URI"] = DatabaseUtil.generate_database_uri()
 

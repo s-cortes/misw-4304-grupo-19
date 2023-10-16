@@ -6,7 +6,7 @@ from marshmallow import ValidationError
 
 
 def handle_api_custom_exception(error: BaseAPIError) -> Response:
-    return Response(status=error.code)
+    return Response(status=error.code, response=error.description)
 
 
 def handle_validation_error(error: ValidationError) -> Response:
